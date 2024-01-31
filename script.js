@@ -4,10 +4,38 @@ document.getElementById('requestRideForm').addEventListener('submit', function(e
     const pickupLocation = document.getElementById('pickupLocation').value;
     const dropoffLocation = document.getElementById('dropoffLocation').value;
 
-    // Here you would make an API call to your backend to request a ride
-    console.log(`Requesting ride from ${pickupLocation} to ${dropoffLocation}`);
+    // Prepare the data to be sent in the POST request
+    const requestData = {
+        pickupLocation: pickupLocation,
+        dropoffLocation: dropoffLocation
+    };
 
-    // Reset form after submission or show a message
-    alert('Ride requested successfully!');
+    // The URL to your API Gateway endpoint for requesting a ride
+    const apiEndpoint = 'https://a1y8egpsx4.execute-api.us-east-1.amazonaws.com/dev/ride-requests';
+
+    // Use fetch API to make the POST request
+    fetch(apiEndpoint, {
+        method: 'POST',
+        body: JSON.stringify(requestData),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log(data); // You can handle the response data here
+        alert('Ride requested successfully!');
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        alert('Failed to request ride.');
+    });
+
+    // Reset form after submission
     this.reset();
 });
